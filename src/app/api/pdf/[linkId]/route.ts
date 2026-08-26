@@ -30,8 +30,8 @@ export async function GET(
     const fileBuffer = fs.readFileSync(fullFilePath);
     const watermarkText = doc.customWatermark || doc.recipientEmail;
 
-    // Inject dynamic watermark using pdf-lib
-    const watermarkedPdfBytes = await addWatermarkToPdf(fileBuffer, watermarkText);
+return new Response(Buffer.from(watermarkedPdfBytes) as unknown as BodyInit, {
+  const watermarkedPdfBytes = await addWatermarkToPdf(fileBuffer, watermarkText);
 
     return new Response(Buffer.from(watermarkedPdfBytes) as unknown as BodyInit, {
       status: 200,
