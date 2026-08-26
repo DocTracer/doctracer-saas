@@ -3,7 +3,7 @@ import { PDFDocument, rgb, StandardFonts, degrees } from "pdf-lib";
 export async function addWatermarkToPdf(
   pdfBuffer: Buffer | Uint8Array,
   watermarkText: string
-): Promise<Uint8Array> {
+): Promise<Buffer> {
   const pdfDoc = await PDFDocument.load(pdfBuffer);
   const pages = pdfDoc.getPages();
   const font = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
@@ -41,5 +41,6 @@ export async function addWatermarkToPdf(
     });
   }
 
-  return await pdfDoc.save();
+  const bytes = await pdfDoc.save();
+  return Buffer.from(bytes);
 }

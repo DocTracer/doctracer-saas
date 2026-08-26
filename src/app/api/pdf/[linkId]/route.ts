@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
 import { addWatermarkToPdf } from "@/lib/pdf-watermark";
 import fs from "fs";
 import path from "path";
@@ -30,7 +33,8 @@ export async function GET(
     // Inject dynamic watermark using pdf-lib
     const watermarkedPdfBytes = await addWatermarkToPdf(fileBuffer, watermarkText);
 
-return new Response(Buffer.from(watermarkedPdfBytes) as unknown as BodyInit, {      status: 200,
+    return new Response(Buffer.from(watermarkedPdfBytes) as unknown as BodyInit, {
+      status: 200,
       headers: {
         "Content-Type": "application/pdf",
         "Content-Disposition": doc.allowDownload
