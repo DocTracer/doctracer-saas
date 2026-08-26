@@ -30,7 +30,8 @@ export async function GET(
     // Inject dynamic watermark using pdf-lib
     const watermarkedPdfBytes = await addWatermarkToPdf(fileBuffer, watermarkText);
 
-    return new NextResponse(Buffer.from(watermarkedPdfBytes) as any, {
+    return new Response(Buffer.from(watermarkedPdfBytes) as unknown as BodyInit, {
+      status: 200,
       headers: {
         "Content-Type": "application/pdf",
         "Content-Disposition": doc.allowDownload
