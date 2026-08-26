@@ -1,0 +1,55 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id                   String     @id @default(uuid())
+  email                String     @unique
+  stripeCustomerId     String?
+  stripeSubscriptionId String?
+  subscriptionStatus   String     @default("free") // "free" or "pro"
+  createdAt            DateTime   @default(now())
+  updatedAt            DateTime   @updatedAt
+  documents            Document[]
+}
+
+model Document {
+  id              String        @id @default(uuid())
+  title           String
+  filePath        String
+  linkId          String        @unique
+  recipientEmail  String
+  customWatermark String?
+  allowDownload   Boolean       @default(false)
+  isRevoked       Boolean       @default(false)
+  expiresAt       DateTime?
+  createdAt       DateTime      @default(now())
+  userId          String?
+  user            User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  viewLogs        ViewLog[]
+}
+
+model ViewLog {
+  id                   String          @id @default(uuid())
+  documentId           String
+  document             Document        @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  recipientIp          String?
+  userAgent            String?
+  totalDurationSeconds Int             @default(0)
+  createdAt            DateTime        @default(now())
+  updatedAt            DateTime        @updatedAt
+  pageAnalytics        PageAnalytics[]
+}
+
+model PageAnalytics {
+  id              String   @id @default(uuid())
+  viewLogId       String
+  viewLog         ViewLog  @relation(fields: [viewLogId], references: [id], onDelete: Cascade)
+  pageNumber      Int
+  durationSeconds Int      @default(0)
+}
